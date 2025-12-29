@@ -1,0 +1,14 @@
+[package]
+name = "jtag_lab"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+color-eyre = "0.6"
+eyre = "0.6"
+ftdi = { version = "0.1.3", features = ["vendored"] }
+ftdi-mpsse = "0.1.2"
+strum = { version = "0.27.2", features = ["derive"] }
+tracing = "0.1"
+tracing-error = "0.2.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
