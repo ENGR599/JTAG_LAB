@@ -167,7 +167,6 @@ impl Backend for Device {
                     self.cmd_buf.push(len as u8);
                     self.cmd_buf.push((len >> 8) as u8);
                     self.cmd_buf.extend_from_slice(chunk);
-                    buf.notify_write(chunk.len());
                     self.maybe_flush(buf)?;
                 }
 
@@ -179,7 +178,6 @@ impl Backend for Device {
                     if read {
                         self.cmd_read_len += 1;
                     }
-                    buf.notify_write(1);
                     last_bit = last & 0x80 != 0;
                 }
             }

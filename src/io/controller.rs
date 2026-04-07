@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
-use eyre::{Result, eyre};
+use eyre::{eyre, Result};
 
 use crate::{
     io::{
         backend::{Backend, Data},
         devices::{DeviceInfo, IdCode},
     },
-    jtag::{PATHS, Path, State},
+    jtag::{Path, State, PATHS},
     units::{Bits, Bytes},
 };
 
@@ -43,11 +43,14 @@ fn detect_chain<B: Backend>(
         backend.bytes(buf, idle_to_sdr, Data::Rx(to_read), sdr_to_idle)?;
         backend.flush(buf)?;
 
-        let (ids, []) = buf.as_chunks() else {
+        if buf.len() % 4 != 0 {
             return Err(eyre!(
                 "failed to fill idcode, or returned extra data: {buf:02X?}"
             ));
-        };
+        }
+        // SAFETY: this, including the above check is `.as_chunks()`, but that's not stable in 1.75
+        let ids =
+            unsafe { std::slice::from_raw_parts(buf.as_ptr().cast::<[u8; 4]>(), buf.len() / 4) };
         let id = ids[ret.len()];
         match u32::from_le_bytes(id) {
             // reached end of chain

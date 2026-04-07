@@ -2,7 +2,6 @@ use std::{
     collections::VecDeque,
     fmt::Display,
     ops::{Index, IndexMut},
-    sync::LazyLock,
 };
 
 use strum::VariantArray;
@@ -89,18 +88,19 @@ pub const GRAPH: Graph<Edges> = Graph([
     State::UpdateIR.edges(),
 ]);
 
-pub static PATHS: LazyLock<Graph<Graph<Path>>> = LazyLock::new(|| {
-    let mut ret = Graph(
-        [const { Graph([Path { path: 0, len: 0 }; State::VARIANTS.len()]) }; State::VARIANTS.len()],
-    );
-    for start in State::VARIANTS {
-        for end in State::VARIANTS {
-            let path = get_path(*start, *end);
-            ret[*start][*end] = path;
+lazy_static::lazy_static! {
+    pub static ref PATHS: Graph<Graph<Path>> = {
+        const EMPTY: Graph<Path> = Graph([Path { path: 0, len: 0 }; State::VARIANTS.len()]);
+        let mut ret = Graph([EMPTY; State::VARIANTS.len()]);
+        for start in State::VARIANTS {
+            for end in State::VARIANTS {
+                let path = get_path(*start, *end);
+                ret[*start][*end] = path;
+            }
         }
-    }
-    ret
-});
+        ret
+    };
+}
 
 impl<T> Index<State> for Graph<T> {
     type Output = T;

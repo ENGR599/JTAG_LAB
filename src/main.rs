@@ -41,6 +41,5 @@ fn init_logging() -> Result<()> {
         .with(EnvFilter::from_default_env())
         .with(tracing_error::ErrorLayer::default())
         .init();
-    color_eyre::install()?;
     Ok(())
 }

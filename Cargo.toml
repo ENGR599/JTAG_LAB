@@ -1,13 +1,13 @@
 [package]
 name = "jtag_lab"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [dependencies]
-color-eyre = "0.6"
 eyre = "0.6"
 ftdi = { version = "0.1.3", features = ["vendored"] }
 ftdi-mpsse = "0.1.2"
+lazy_static = "1.5.0"
 strum = { version = "0.27.2", features = ["derive"] }
 tracing = "0.1"
 tracing-error = "0.2.1"
